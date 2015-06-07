@@ -22,6 +22,9 @@ workBase='%s/src/UserCode/TopFromHeavyIons' % cmsswBase
 jobsBase='%s/FARM%s'%(workBase,time.time())
 os.system('mkdir -p %s'%jobsBase)
 
+#prepare output
+os.system('cmsMkdir %s'%opt.output)
+
 #init a new proxy if none has been passed
 if opt.proxy is None:
     print 'Initiating a new proxy'
