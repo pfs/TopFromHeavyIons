@@ -40,7 +40,7 @@ Other options can be passed. If no queue is given, jobs are sequentially run in 
 ## Tree production
 
 ```
-TODO
+cmsRun test/runHIForest_MC_cfg.py inputFiles=/store/cmst3/group/top/summer2015/cmssw/PythiaTTbar/
 ```
 Will produce the HI analysis file from a given directory in EOS.
 The "common" HI analysis file is called a HIForest file. 
