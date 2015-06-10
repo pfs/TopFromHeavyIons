@@ -45,9 +45,13 @@ for n in xrange(1,opt.jobs+1):
     scriptFile.write('cmsRun %s/test/%s maxEvents=%d hardProc=%s jobSeed=%s\n' % (workBase,opt.cfg,opt.nevts,opt.proc,n) )
     scriptFile.write('cmsRun %s/test/DIGIStep_cfg.py inputFiles=file:Events_%d.root\n' % (workBase,n) )
     scriptFile.write('cmsRun %s/test/RECOStep_cfg.py inputFiles=file:Events_%d_DIGI.root\n' % (workBase,n) )
-    scriptFile.write('cmsStage Events_%d_DIGI_RECO.root %s\n' % (n,opt.output) )
-    scriptFile.write('rm Events*root\n')
+    scriptFile.write('cmsRun %s/test/runHIForest_MC_cfg.py inputFiles=file:Events_%d_DIGI_RECO.root outputFile=HIForest_%s_%d.root\n' % (n,opt.proc,n)) 
+    scriptFile.write('cmsStage HIForest_%s_%d.root %s\n' % (opt.proc,n,opt.output) )
+    scriptFile.write('rm Events_%d*root\n' % n)
+    scriptFile.write('rm HIForest_%s_%d.root\n' % (opt.proc,n))
     scriptFile.close()
+
+    #preare to run it
     os.system('chmod u+rwx %s/runJob_%d.sh'%(jobsBase,n))
 
     #submit it to the batch or run it locally
