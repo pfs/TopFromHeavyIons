@@ -31,14 +31,6 @@ Will run the DIGI step for the previous set of events
 cmsRun test/RECOStep_cfg.py inputFiles=file:Events_1_DIGI.root [maxEvents=1000]
 ```
 Will run the RECO step for the previous set events.
-These three steps can be run on the batch system, by using the following script.
-```
-python scripts/submitProduction.py -q 2nw -j 90 -n 100 -p pythiaTTbar -o /store/cmst3/group/top/summer2015/cmssw/PythiaTTbar
-```
-Other options can be passed. If no queue is given, jobs are sequentially run in the submission machine.
-
-## Tree production
-
 ```
 cmsRun test/runHIForest_MC_cfg.py inputFiles=/store/cmst3/group/top/summer2015/cmssw/PythiaTTbar/
 ```
@@ -46,3 +38,11 @@ Will produce the HI analysis file from a given directory in EOS.
 The "common" HI analysis file is called a HIForest file. 
 Such a file is a collection of various TTrees, including muon, jet, etc, information. 
 More details can be found at https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiForestSetup. 
+
+These four steps can be run on the batch system sequentially, by using the following script.
+```
+python scripts/submitProduction.py -q 2nw -j 100 -n 250 -p pythiaTTbar -o /store/cmst3/group/top/summer2015/cmssw/PythiaTTbar
+```
+Other options can be passed. If no queue is given, jobs are sequentially run in the submission machine.
+
+
