@@ -21,10 +21,16 @@ nremoved=0
 for f in allFiles :
     try:
         tfile = ROOT.TFile.Open(f)
-        if tfile.GetSize()<1024 : raise IOError
-        if tfile.TestBit(ROOT.TFile.kRecovered) : raise IOError    
+        if tfile.GetSize()<1024 or tfile.TestBit(ROOT.TFile.kRecovered) :
+            tfile.Close()
+            raise IOError
+
         iEvts=tfile.Get('hiEvtAnalyzer/HiTree').GetEntriesFast()
+        if iEvts==0 : 
+            tfile.Close()
+            raise IOError
         totEvts+=iEvts
+
         tfile.Close()
     except:
         pos = f.find('/store')
