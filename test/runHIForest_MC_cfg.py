@@ -179,11 +179,15 @@ process.quickTrackAssociatorByHits.ComponentName = cms.string('quickTrackAssocia
 
 #####################
 # photons
-process.load('HeavyIonsAnalysis.JetAnalysis.EGammaAnalyzers_cff')
-process.multiPhotonAnalyzer.GenEventScale = cms.InputTag("hiSignal")
-process.multiPhotonAnalyzer.HepMCProducer = cms.InputTag("hiSignal")
-process.RandomNumberGeneratorService.multiPhotonAnalyzer = process.RandomNumberGeneratorService.generator.clone()
+#process.load('HeavyIonsAnalysis.JetAnalysis.EGammaAnalyzers_cff')
+#process.multiPhotonAnalyzer.GenEventScale = cms.InputTag("hiSignal")
+#process.multiPhotonAnalyzer.HepMCProducer = cms.InputTag("hiSignal")
+#process.RandomNumberGeneratorService.multiPhotonAnalyzer = process.RandomNumberGeneratorService.generator.clone()
 
+process.load('HeavyIonsAnalysis.PhotonAnalysis.ggHiNtuplizer_cfi')
+process.photonMatch.matched = cms.InputTag("genParticles")
+process.ggHiNtuplizer.genParticleSrc = cms.InputTag("genParticles")
+process.ggHiNtuplizer.gsfElectronLabel = cms.InputTag('gedGsfElectronsTmp')
 #####################
 # muons
 ######################
@@ -211,6 +215,8 @@ process.reRecoJets = cms.Sequence(
     )
 
 
+
+
 process.ana_step = cms.Path(process.heavyIon*
                             process.centralityBin*
                             process.hltanalysis *
@@ -223,8 +229,9 @@ process.ana_step = cms.Path(process.heavyIon*
                             #process.tpRecoAssocGeneralTracks +
                             process.jetSequences +
                             #process.photonStep_withReco +
-                            #process.pfcandAnalyzer +
-#temp                            process.hltMuTree +
+                            process.ggHiNtuplizer +
+                            process.pfcandAnalyzer +
+                            process.hltMuTree +
                             process.anaTrack +
                             process.HiForest 
                             )

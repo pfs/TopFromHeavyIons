@@ -64,7 +64,8 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
     ),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
     fileName = cms.untracked.string(outputFile),
-    outputCommands = process.RECOSIMEventContent.outputCommands,
+    #outputCommands = process.RECOSIMEventContent.outputCommands,
+    outputCommands = process.FEVTDEBUGEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
 
