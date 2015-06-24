@@ -1,3 +1,4 @@
+#Note: not compatible with gcc / ROOT6 on lxplus. Not sure how to solve it. But using ROOT6 the run macro compiles all classes fine
 ######################
 
 CXX           = g++
