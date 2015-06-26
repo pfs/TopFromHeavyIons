@@ -59,10 +59,10 @@ Long64_t topEvt::LoadTree(Long64_t entry)
 }
 
 //__________________________________________________________
-void topEvt::Run()
+void topEvt::Run(const char *outname)
 {
   //run
-  CreateOutputObjects("AnalysisResults.root");
+  CreateOutputObjects(outname);
   Loop();
 
   fFileOut->Write();

@@ -55,11 +55,11 @@ Long64_t hiEvt::LoadTree(Long64_t entry)
 }
 
 //__________________________________________________________
-void hiEvt::Run()
+void hiEvt::Run(const char *outname)
 {
   //run
   Init(fChain);
-  CreateOutputObjects("AnalysisResults.root");
+  CreateOutputObjects(outname);
   Loop();
 
   fFileOut->Write();
