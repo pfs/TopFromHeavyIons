@@ -1,0 +1,13 @@
+<use name="lhapdf"/>
+<use name="roottmva"/>
+<use name="roofit"/>
+<use name="roostats"/>
+<use name="PhysicsTools/FWLite"/>
+<use name="FWCore/FWLite"/>
+<use name="FWCore/PythonParameterSet"/>
+<use name="FWCore/ParameterSet"/>
+<use name="UserCode/TopFromHeavyIons"/>
+<environment>
+  <bin name="runHITopAnalysis"       file="runHITopAnalysis.cc"></bin>
+</environment>
+<Flags CXXFLAGS="-g"/>

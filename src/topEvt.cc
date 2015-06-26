@@ -1,5 +1,4 @@
-#define analyzeBJets_cxx
-#include "analyzeBJets.h"
+#include "UserCode/TopFromHeavyIons/interface/topEvt.h"
 
 #include <TH1.h>
 #include <TH2.h>
@@ -7,53 +6,38 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TFile.h>
-#include <TTree.h>
+#include <TChain.h>
 
-ClassImp(analyzeBJets)
+ClassImp(topEvt)
 
 //__________________________________________________________
-analyzeBJets::analyzeBJets() : 
+topEvt::topEvt() : 
   hiEvt()
 {
   //Default constructor
 }
 
 //__________________________________________________________
-analyzeBJets::analyzeBJets(TTree *tree) : 
-  hiEvt(tree)
+topEvt::topEvt(std::vector<std::string> &infnames) :
+  hiEvt(infnames)
 {
-  Init(tree);
-}
+  TChain *jetTree = new TChain("akPu3PFJetAnalyzer/t");
+  for(size_t i=0; i<infnames.size(); i++) jetTree->Add(infnames[i].c_str());
 
-//__________________________________________________________
-analyzeBJets::analyzeBJets(const char* infname) : 
-  hiEvt(infname)
-{
-  TFile *fin = TFile::Open(infname);
-  // read trees from file
-  TTree *tree = dynamic_cast<TTree*>(fin->Get("akPu3PFJetAnalyzer/t"));
-  fChain->AddFriend(tree);
+  fChain->AddFriend(jetTree);
+
   Init(fChain);
 }
 
-//__________________________________________________________
-analyzeBJets::analyzeBJets(TFile *file) : 
-  hiEvt(file)
-{
-  // read trees from file
-  TTree *tree = dynamic_cast<TTree*>(file->Get("akPu3PFJetAnalyzer/t"));
-  fChain->AddFriend(tree);
-  Init(tree);
-}
 
 //__________________________________________________________
-analyzeBJets::~analyzeBJets()
+topEvt::~topEvt()
 {
   //Destructor
 }
 
 //__________________________________________________________
-Int_t analyzeBJets::GetEntry(Long64_t entry)
+Int_t topEvt::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
@@ -61,7 +45,7 @@ Int_t analyzeBJets::GetEntry(Long64_t entry)
 }
 
 //__________________________________________________________
-Long64_t analyzeBJets::LoadTree(Long64_t entry)
+Long64_t topEvt::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -75,7 +59,7 @@ Long64_t analyzeBJets::LoadTree(Long64_t entry)
 }
 
 //__________________________________________________________
-void analyzeBJets::Run()
+void topEvt::Run()
 {
   //run
   CreateOutputObjects("AnalysisResults.root");
@@ -86,7 +70,7 @@ void analyzeBJets::Run()
 }
 
 //__________________________________________________________
-void analyzeBJets::Loop()
+void topEvt::Loop()
 {
   //Do your analysis here
   if (fChain == 0) return;
@@ -144,7 +128,7 @@ void analyzeBJets::Loop()
 }
 
 //__________________________________________________________
-void analyzeBJets::CreateOutputObjects(const char* outname) {
+void topEvt::CreateOutputObjects(const char* outname) {
 
   hiEvt::CreateOutputObjects(outname);
 
@@ -183,7 +167,7 @@ void analyzeBJets::CreateOutputObjects(const char* outname) {
 
 
 //__________________________________________________________
-void analyzeBJets::Init(TTree *tree)
+void topEvt::Init(TChain *tree)
 {
   // The Init() function is called when the selector needs to initialize
   // a new tree or chain. Typically here the branch addresses and branch
@@ -310,7 +294,7 @@ void analyzeBJets::Init(TTree *tree)
 }
 
 //__________________________________________________________
-Bool_t analyzeBJets::Notify()
+Bool_t topEvt::Notify()
 {
   // The Notify() function is called when a new file is opened. This
   // can be either for a new TTree in a TChain or when when a new TTree
@@ -322,7 +306,7 @@ Bool_t analyzeBJets::Notify()
 }
 
 //__________________________________________________________
-void analyzeBJets::Show(Long64_t entry)
+void topEvt::Show(Long64_t entry)
 {
   // Print contents of entry.
   // If entry is not specified, print current entry
@@ -331,7 +315,7 @@ void analyzeBJets::Show(Long64_t entry)
 }
 
 //__________________________________________________________
-Int_t analyzeBJets::Cut(Long64_t entry)
+Int_t topEvt::Cut(Long64_t entry)
 {
   // This function may be called from Loop.
   // returns  1 if entry is accepted.

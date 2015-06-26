@@ -1,39 +1,31 @@
-//////////////////////////////////////////////////////////
-// This class has been automatically generated on
-// Mon Jun 22 17:46:40 2015 by ROOT version 5.34/09
-// from TTree t/akPu3PFpatJetsWithBtagging Jet Analysis Tree
-// found on file: /data/wrk/cms/top/data/PythiaTTbar/HIForest_pythiaTTbar_2.root
-//////////////////////////////////////////////////////////
-
-#ifndef analyzeBJets_h
-#define analyzeBJets_h
+#ifndef topEvt_h
+#define topEvt_h
 
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-#include <TTree.h>
+#include <TChain.h>
 #include <TH1.h>
 #include <TH2.h>
 #include <TH3.h>
 
-#include "hiEvt.h"
+#include "UserCode/TopFromHeavyIons/interface/hiEvt.h"
 
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
-class analyzeBJets : public hiEvt {
+class topEvt : public hiEvt {
  public :
-  analyzeBJets();
-  analyzeBJets(const char* infname);
-  analyzeBJets(TFile *file);
-  analyzeBJets(TTree *tree);
-  virtual ~analyzeBJets();
-
+  topEvt();
+  topEvt(std::vector<std::string> &infnames);
+  topEvt(TChain *chain);
+  virtual ~topEvt();
+  
   virtual Int_t    Cut(Long64_t entry);
   virtual Int_t    GetEntry(Long64_t entry);
   virtual Long64_t LoadTree(Long64_t entry);
-  virtual void     Init(TTree *tree);
+  virtual void     Init(TChain *tree);
   virtual void     CreateOutputObjects(const char* outname);
   virtual void     Run();
   virtual void     Loop();
@@ -274,7 +266,7 @@ class analyzeBJets : public hiEvt {
   TBranch        *b_gendphijt;   //!
   TBranch        *b_gendrjt;   //!
 
-  ClassDef(analyzeBJets,1)
+  ClassDef(topEvt,1)
 };
 
 #endif

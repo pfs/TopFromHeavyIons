@@ -19,15 +19,14 @@
 class hiEvt {
  public :
   hiEvt();
-  hiEvt(const char* infname);
-  hiEvt(TFile *file);
-  hiEvt(TTree *tree);
+  hiEvt(std::vector<std::string> &infnames);
+  hiEvt(TChain *tree);
   virtual ~hiEvt();
 
   virtual Int_t    Cut(Long64_t entry);
   virtual Int_t    GetEntry(Long64_t entry);
   virtual Long64_t LoadTree(Long64_t entry);
-  virtual void     Init(TTree *tree);
+  virtual void     Init(TChain *tree);
   virtual void     CreateOutputObjects(const char* outname);
   virtual void     Run();
   virtual void     Loop();
@@ -37,7 +36,7 @@ class hiEvt {
  protected:
   TFile          *fFileOut; //!output file
   TList          *fOutput;  //!output list
-  TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+  TChain          *fChain;   //!pointer to the analyzed TChain
   Int_t           fCurrent; //!current Tree number in a TChain
 
   // Declaration of leaf types

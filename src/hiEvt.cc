@@ -1,5 +1,5 @@
-#define hiEvt_cxx
-#include "hiEvt.h"
+#include "UserCode/TopFromHeavyIons/interface/hiEvt.h"
+
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -15,32 +15,13 @@ hiEvt::hiEvt() : fFileOut(0),
 }
 
 //__________________________________________________________
-hiEvt::hiEvt(TTree *tree) : fFileOut(0),
-                            fOutput(0), 
-                            fChain(0) 
+hiEvt::hiEvt(std::vector<std::string> &infnames) : fFileOut(0),
+						   fOutput(0), 
+						   fChain(0) 
 {
-  Init(tree);
-}
-
-//__________________________________________________________
-hiEvt::hiEvt(const char* infname) : fFileOut(0),
-                                    fOutput(0), 
-                                    fChain(0) 
-{
-  TFile *fin = TFile::Open(infname);
-  // read trees from file
-  TTree *tree = dynamic_cast<TTree*>(fin->Get("hiEvtAnalyzer/HiTree"));
-  fChain = tree;
-}
-
-//__________________________________________________________
-hiEvt::hiEvt(TFile *file) : fFileOut(0),
-                            fOutput(0), 
-                            fChain(0) 
-{
-  // read trees from file
-  TTree *tree = dynamic_cast<TTree*>(file->Get("akPu3PFJetAnalyzer/t"));
-  fChain = tree;
+  //add files to chain
+  fChain = new TChain("hiEvtAnalyzer/HiTree");
+  for(size_t i=0; i<infnames.size(); i++) fChain->Add(infnames[i].c_str());
 }
 
 //__________________________________________________________
@@ -103,7 +84,7 @@ void hiEvt::Loop()
 }
 
 //__________________________________________________________
-void hiEvt::Init(TTree *tree)
+void hiEvt::Init(TChain *tree)
 {
   // The Init() function is called when the selector needs to initialize
   // a new tree or chain. Typically here the branch addresses and branch
@@ -157,7 +138,7 @@ void hiEvt::Init(TTree *tree)
 Bool_t hiEvt::Notify()
 {
   // The Notify() function is called when a new file is opened. This
-  // can be either for a new TTree in a TChain or when when a new TTree
+  // can be either for a new TChain in a TChain or when when a new TChain
   // is started when using PROOF. It is normally not necessary to make changes
   // to the generated code, but the routine can be extended by the
   // user if needed. The return value is currently not used.

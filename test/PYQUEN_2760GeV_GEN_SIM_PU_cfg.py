@@ -55,7 +55,7 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('PYTHIA at sqrt(s) = 2.76TeV'),
+    annotation = cms.untracked.string('PYQUEN Z->mumu and Z->ee (pt-hat > 10 GeV) at sqrt(s) = 2.76TeV'),
     name = cms.untracked.string('$Source: /local/projects/CMSSW/rep/CMSSW/Configuration/Generator/python/Pyquen_ZeemumuJets_pt10_2760GeV_cfi.py,v $'),
     version = cms.untracked.string('$Revision: 1.3 $')
 )
@@ -85,30 +85,18 @@ process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCHI2_75_V2', '')
 
-process.generator = cms.EDFilter("Pythia6GeneratorFilter",
-                                 ExternalDecays = cms.PSet(Tauola = cms.untracked.PSet(UseTauolaPolarization = cms.bool(True),
-                                                                                       InputCards = cms.PSet(mdtau = cms.int32(0),
-                                                                                                             pjak2 = cms.int32(0),
-                                                                                                             pjak1 = cms.int32(0)
-                                                                                                             )
-                                                                                       ),
-                                                           parameterSets = cms.vstring('Tauola')
-                                                           ),
-                                 UseExternalGenerators = cms.untracked.bool(True),
-                                 pythiaPylistVerbosity = cms.untracked.int32(1),
-                                 pythiaHepMCVerbosity = cms.untracked.bool(True),
-                                 comEnergy = cms.double(2760.0),
-                                 maxEventsToPrint = cms.untracked.int32(0),
-                                 crossSection = cms.untracked.double(1),
-                                 PythiaParameters = cms.PSet(processParameters = cms.vstring('MSEL=0         ! User defined processes', 
-											     'MSUB(81)  = 1     ! qqbar to QQbar',
-											     'MSUB(82)  = 1     ! gg to QQbar',
-											     'MSTP(7)   = 6     ! flavor = top',
-											     'PMAS(5,1)=4.8   ! b quark mass', 
-											     'PMAS(6,1)=172.5 ! t quark mass', 
-											     'MSTJ(1)=1       ! Fragmentation/hadronization on or off', 
-											     'MSTP(61)=1      ! Parton showering on or off'),
+process.generator = cms.EDFilter("PyquenGeneratorFilter",
+				 PythiaParameters = cms.PSet(customProcesses = cms.vstring('MSEL=0   ! User processes'),
+							     hydjetPythiaDefault = cms.vstring('MSEL=0   ! user processes', 
+											       'CKIN(3)=6.', 
+											       'MSTP(81)=0'),
+							     kinematics = cms.vstring('CKIN(3)=10', 
+										      'CKIN(4)=9999', 
+										      'CKIN(7)=-2.', 
+										      'CKIN(8)=2.'),
+							     myParameters = cms.vstring(),
 							     parameterSets = cms.vstring('pythiaUESettings', 
+											 'customProcesses', 
 											 '%s' % options.hardProc,
 											 'pythiaWtoLeptons',
 											 'pythiaZtoLeptons',
@@ -290,9 +278,26 @@ process.generator = cms.EDFilter("Pythia6GeneratorFilter",
 											    'MDME(206,1) = 1   !W decay into e+ nu_e',
 											    'MDME(207,1) = 1   !W decay into mu+ nu_mu',
 											    'MDME(208,1) = 0   !W decay into tau+ nu_tau')
-							     )
+							     ),
+				 aBeamTarget = cms.double(208.0),
+				 angularSpectrumSelector = cms.int32(0),
+				 bFixed = cms.double(0.0),
+				 bMax = cms.double(0.0),
+				 bMin = cms.double(0.0),
+				 backgroundLabel = cms.InputTag("generator"),
+				 cFlag = cms.int32(0),
+				 comEnergy = cms.double(2760.0),
+				 doCollisionalEnLoss = cms.bool(False),
+				 doIsospin = cms.bool(True),
+				 doQuench = cms.bool(True),
+				 doRadiativeEnLoss = cms.bool(True),
+				 embeddingMode = cms.bool(False),
+				 hadronFreezoutTemperature = cms.double(0.14),
+				 numQuarkFlavor = cms.int32(0),
+				 qgpInitialTemperature = cms.double(1.0),
+				 qgpNumQuarkFlavor = cms.int32(0),
+				 qgpProperTimeFormation = cms.double(0.1)
 				 )
-
 
 
 process.ProductionFilterSequence = cms.Sequence(process.generator)

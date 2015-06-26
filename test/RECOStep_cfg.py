@@ -24,6 +24,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #parse command line arguments
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
+options.register ('isPP',
+		  False,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.bool,
+		  "Flag if this is a pp simulation")
 options.parseArguments()
 
 #prepare output
@@ -73,7 +78,7 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
 
 # Other statements
 from UserCode.TopFromHeavyIons.Hydjet_Quenched_MinBias_5020GeV_cfi import getHIMinBiasFileList
-process.mix.input.fileNames = getHIMinBiasFileList()
+if not options.isPP : process.mix.input.fileNames = getHIMinBiasFileList()
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCHI2_75_V2', '')
 
