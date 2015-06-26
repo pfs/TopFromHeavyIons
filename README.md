@@ -12,6 +12,21 @@ scram b -j 9
 cd UserCode/TopFromHeavyIons/
 ```
 
+## Running a local analysis
+
+The analysis of top quark events is implemented in src/topEvt.cc (Run method).
+It makes use of the standard HIforest trees.
+The class is instantiated by an executable called bin/runHITopAnalysis.cc.
+To run the analysis one calls it as
+```
+runHITopAnalysis test/HITopAnalysisParameters_cfg.py
+```
+where the cfg file can be modified to use different sources of events and different output file names.
+The histograms in the output files can be plotted using the following script.
+```
+TODO
+```
+
 ## Sample production
 
 ```
