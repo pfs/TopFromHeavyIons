@@ -10,8 +10,8 @@ centralityRequirements={"inc":[0,200],
                         "80to100":[160,200]}
 
 
-sample=tt_PbPb.clone()
-centralityBins=centralityRequirements["inc"].clone()
+sample=tt_PbPb
+centralityBins=centralityRequirements["inc"]
 
 config = cms.PSet(
     output = cms.string('cen_%dto%d_%s'%(centralityBins[0],centralityBins[1],sample[0])),
