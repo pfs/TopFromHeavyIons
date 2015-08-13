@@ -100,7 +100,7 @@ void topEvt::Loop()
     nb = fChain->GetEntry(jentry);   nbytes += nb;
     if (Cut(ientry) < 0) continue;
 
-    printf("\r [ %d/100 ] done", (int)(100.*jentry/(float)(nentries)));
+    printf("\r [ %3.0f/100 ] done", (float)((100.*jentry)/(float)(nentries)));
 
     fPtHat->Fill(pthat);
     fEventSelection->Fill(0);
@@ -202,11 +202,13 @@ void topEvt::Loop()
       {
 	if(rawpt[j] < 15.) continue; //remove low pT jets
 	if(TMath::Abs(jteta[j]) > 2. ) continue;
+	if(chargedN[j]<1) continue; //at least 1 track in the jet
 	
 	Float_t ptsub = jtpt[j]; //jet pT after subtracting background
 	njets15 += (ptsub>15);
 	njets30 += (ptsub>30);
 	njets40 += (ptsub>40);
+
 	fPtJet->Fill(ptsub);
 	if(refdrjt[j]<0.05 && refpt[j]>0.) { 
 	  //cut on deltaR needs to be optimized: ask HI jet expert

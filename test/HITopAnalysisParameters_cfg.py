@@ -4,14 +4,14 @@ from UserCode.TopFromHeavyIons.storeTools_cff import *
 tt_PbPb=("ttbar_PbPb.root","/store/cmst3/group/top/summer2015/cmssw/PythiaTTbar/PbPb")
 DY_PbPb=("DY_PbPb.root","/store/cmst3/user/psilva/HI/PythiaZjets/PbPb")
 centralityRequirements={"inc":[0,200],
-                        "0to20":[0,40],
-                        "20to50":[40,100],
-                        "50to80":[100,160],
-                        "80to100":[160,200]}
+                        "0to20":[160,200],
+                        "20to50":[100,160],
+                        "50to80":[40,100],
+                        "80to100":[0,40]}
 
 
-sample=tt_PbPb
-#sample=DY_PbPb
+#sample=tt_PbPb
+sample=DY_PbPb
 
 centralityBins=centralityRequirements["inc"]
 #centralityBins=centralityRequirements["0to20"]
