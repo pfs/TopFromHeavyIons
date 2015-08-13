@@ -12,14 +12,13 @@ process = cms.Process('SIM')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
+process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.EventContent.EventContentHeavyIons_cff')
-process.load('SimGeneral.MixingModule.HiMixGEN_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.Geometry.GeometrySimDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.Generator_cff')
 process.load('GeneratorInterface.HiGenCommon.VtxSmearedMatchHI_cff')
-process.load('Configuration.StandardSequences.GeneratorMix_cff')
 process.load('GeneratorInterface.Core.genFilterSummary_cff')
 process.load('Configuration.StandardSequences.SimIdeal_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
@@ -79,8 +78,6 @@ process.FEVTDEBUGoutput = cms.OutputModule("PoolOutputModule",
 # Additional output definition
 
 # Other statements
-from UserCode.TopFromHeavyIons.Hydjet_Quenched_MinBias_5020GeV_cfi import getHIMinBiasFileList
-process.mix.input.fileNames = getHIMinBiasFileList()
 process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCHI2_75_V2', '')
@@ -108,6 +105,10 @@ process.generator = cms.EDFilter("Pythia6GeneratorFilter",
 											     'PMAS(6,1)=172.5 ! t quark mass', 
 											     'MSTJ(1)=1       ! Fragmentation/hadronization on or off', 
 											     'MSTP(61)=1      ! Parton showering on or off'),
+							     kinematics = cms.vstring('CKIN(3)=10', 
+										      'CKIN(4)=9999', 
+										      'CKIN(7)=-2.', 
+										      'CKIN(8)=2.'),
 							     parameterSets = cms.vstring('pythiaUESettings', 
 											 '%s' % options.hardProc,
 											 'pythiaWtoLeptons',

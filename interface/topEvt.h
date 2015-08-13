@@ -8,6 +8,8 @@
 #include <TH1.h>
 #include <TH2.h>
 #include <TH3.h>
+#include <TGraphErrors.h>
+#include <TGraphAsymmErrors.h>
 
 #include "UserCode/TopFromHeavyIons/interface/hiEvt.h"
 
@@ -18,7 +20,7 @@
 class topEvt : public hiEvt {
  public :
   topEvt();
-  topEvt(std::vector<std::string> &infnames);
+  topEvt(std::vector<std::string> &infnames,int maxEvts=-1);
   topEvt(TChain *chain);
   virtual ~topEvt();
   
@@ -33,16 +35,50 @@ class topEvt : public hiEvt {
   virtual void     Show(Long64_t entry = -1);
   
  protected:
+  Int_t maxEvts_;
+
   //output histos
-  TH1F *fPtHat;       //!
+  TH1F *fPtHat;      
+  TH1F *fEventSelection; 
+
+  //muon histos
+  TH1F *hist_gen_pt_signal;
+  TH1F *hist_gen_pt_bg;
+  TH1F *hist_R;
+  TH1F *hist_glb_pt_signal;
+  TH1F *hist_glb_eta_signal;
+  TH1F *hist_glb_pt_signal_pass;
+  TH1F *hist_glb_pt_bg;
+  TH1F *hist_glb_eta_bg;
+  TH1F *hist_glb_pt_bg_pass;
+  TGraphAsymmErrors *hist_eff_pt_signal,*hist_eff_pt_bg;
+  TH1F *hist_glb_dxy_signal;
+  TH1F *hist_glb_dxy_bg;
+  TH1F *hist_nmhits_signal;
+  TH1F *hist_nmhits_bg;
+  TH1F *hist_nthits_signal;
+  TH1F *hist_nthits_bg;
+  TH1F *hist_nphits_signal;
+  TH1F *hist_nphits_bg;
+  TH1F *hist_chi_signal;
+  TH1F *hist_chi_bg;  
+  TH1F *hist_nMS_signal;
+  TH1F *hist_nMS_bg;
+  TH1F *hist_glb_dz_signal;
+  TH1F *hist_glb_dz_bg;
+  TH1F *hist_tLWM_signal;
+  TH1F *hist_tLWM_bg;
+  TH1F *hist_hiBin_signal;
+  TH1F *hist_sumchpt;
+  TH1F *invariant_mass_histogram; 
+
+
   TH1F *fPtJet;       //!
   TH2F *fPtResponse;  //!
-  TH1F *fDiscrSSVHighEff[2]; //!
-  TH1F *fDiscrSSVHighPur[2]; //!
-  TH1F *fDiscrCSVSimple[2];  //!
-  TH1F *fDiscrCSVMVA[2];     //!
-  TH1F *fSVMass[2];          //! secondary vertex mass
-  TH1F *fJetMass[2];         //! jet mass
+  TH1F *fNJets15, *fNJets30, *fNJets40;
+  TH1F *fDiscrCSVSimple[2];
+  TGraphErrors *csveffgraph[2];
+  TGraphErrors *csvpurgraph;
 
   // Declaration of leaf types
   Int_t           evt;
@@ -155,6 +191,42 @@ class topEvt : public hiEvt {
   Float_t         gendphijt[7];   //[ngen]
   Float_t         gendrjt[7];   //[ngen]
 
+  Int_t n_gen;
+  Int_t n_glb;
+	Float_t gen_pt[10];
+	Float_t gen_eta[10];
+	Float_t gen_phi[10];
+	Float_t glb_pt[10];
+	Float_t glb_eta[10];
+	Float_t glb_phi[10];
+	Int_t gen_mom[10];
+
+	Float_t glb_dxy[10];
+	Float_t glb_dz[10];
+
+	Int_t nmhits[10];
+	Int_t nthits[10];
+	Int_t nphits[10];
+	
+	Float_t chi[10];
+	
+	Int_t nMS[10];
+	Int_t tLWM[10];
+
+	//Int_t pfId;
+	Int_t nPFpart;
+	Float_t pfPt[3000];
+	Float_t pfEta[9000];
+	Float_t pfPhi[9000];
+
+
+	Float_t trr[4] = {0.6,0.7,0.8,0.9};
+	Double_t efficiency[4];
+	Double_t purity[4];
+	Float_t sumPt=0;
+	
+
+
   // List of branches
   TBranch        *b_evt;   //!
   TBranch        *b_b;   //!
@@ -265,6 +337,30 @@ class topEvt : public hiEvt {
   TBranch        *b_genphi;   //!
   TBranch        *b_gendphijt;   //!
   TBranch        *b_gendrjt;   //!
+
+  TBranch	  *b_n_gen;
+  TBranch 	  *b_n_glb;
+  TBranch	   *b_gen_pt;
+	TBranch 	*b_gen_eta;
+	TBranch 	*b_gen_phi;
+	TBranch		*b_glb_pt;
+	TBranch 	*b_glb_eta;
+	TBranch 	*b_glb_phi;
+	TBranch		*b_gen_mom;
+	TBranch 	*b_glb_dxy;
+	TBranch 	*b_glb_dz;
+	TBranch 	*b_nmhits;
+	TBranch 	*b_nthits;
+	TBranch 	*b_nphits;
+	TBranch 	*b_chi;
+	TBranch 	*b_nMS;
+	TBranch 	*b_tLWM;
+	
+	//TBranch 	*b_pfId;
+	TBranch 	*b_nPFpart;
+	TBranch		*b_pfPt;
+	TBranch 	*b_pfEta;
+	TBranch 	*b_pfPhi;
 
   ClassDef(topEvt,1)
 };

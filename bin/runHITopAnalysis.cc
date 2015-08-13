@@ -30,10 +30,13 @@ int main(int argc, char* argv[])
   const edm::ParameterSet &runProcess = edm::readPSetsFrom(argv[1])->getParameter<edm::ParameterSet>("config");
   std::vector<std::string> urls=runProcess.getParameter<std::vector<std::string> >("input");
   std::string outname = runProcess.getParameter<std::string>("output");
+  int maxEvts = runProcess.getParameter<int>("maxEvents");
 
   // run the analysis
-  cout << "Running analysis over " << urls.size() << " files" << std::endl;
-  topEvt *ana = new topEvt(urls);
+  cout << "Running analysis over " << urls.size() << " files" << std::endl
+       << maxEvts << " events will be processed" << std::endl;
+  
+  topEvt *ana = new topEvt(urls,maxEvts);
   ana->Run(outname.c_str());
   cout << "Results have been stored in " << outname << endl;
 }

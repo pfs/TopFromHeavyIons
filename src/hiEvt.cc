@@ -72,13 +72,10 @@ void hiEvt::Loop()
   //Do analysis here
    if (fChain == 0) return;
 
-   Long64_t nentries = fChain->GetEntriesFast();
-
-   Long64_t nbytes = 0, nb = 0;
+   Long64_t nentries = fChain->GetEntries();
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
    }
 }
@@ -100,12 +97,12 @@ void hiEvt::Init(TChain *tree)
   fCurrent = -1;
   fChain->SetMakeClass(1);
 
-  fChain->SetBranchAddress("run", &run, &b_run);
-  fChain->SetBranchAddress("evt", &evt, &b_evt);
-  fChain->SetBranchAddress("lumi", &lumi, &b_lumi);
-  fChain->SetBranchAddress("vx", &vx, &b_vx);
-  fChain->SetBranchAddress("vy", &vy, &b_vy);
-  fChain->SetBranchAddress("vz", &vz, &b_vz);
+  fChain->SetBranchAddress("run", &run);
+  fChain->SetBranchAddress("evt", &evt);
+  fChain->SetBranchAddress("lumi", &lumi);
+  fChain->SetBranchAddress("vx", &vx);
+  fChain->SetBranchAddress("vy", &vy);
+  fChain->SetBranchAddress("vz", &vz);
   fChain->SetBranchAddress("hiBin", &hiBin, &b_hiBin);
   fChain->SetBranchAddress("hiHF", &hiHF, &b_hiHF);
   fChain->SetBranchAddress("hiHFplus", &hiHFplus, &b_hiHFplus);

@@ -73,12 +73,6 @@ class hiEvt {
   Float_t         hiEvtPlanes[29];   //[hiNevtPlane]
 
   // List of branches
-  TBranch        *b_run;   //!
-  TBranch        *b_evt;   //!
-  TBranch        *b_lumi;   //!
-  TBranch        *b_vx;   //!
-  TBranch        *b_vy;   //!
-  TBranch        *b_vz;   //!
   TBranch        *b_hiBin;   //!
   TBranch        *b_hiHF;   //!
   TBranch        *b_hiHFplus;   //!

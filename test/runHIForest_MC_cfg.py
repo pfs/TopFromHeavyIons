@@ -224,7 +224,7 @@ process.ana_step = cms.Path(process.heavyIon*
                             process.hiEvtAnalyzer* #evt analyzer is fundamentally broken with the new consumes model
                             process.hiExtraGenSequence*
                             process.reRecoJets*
-                            #process.HiGenParticleAna*
+                            process.HiGenParticleAna*
                             #process.quickTrackAssociatorByHits *
                             #process.tpRecoAssocGeneralTracks +
                             process.jetSequences +
