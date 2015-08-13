@@ -166,5 +166,4 @@ void hiEvt::CreateOutputObjects(const char* outname) {
   //create output objects
   if(!fFileOut) fFileOut = new TFile(outname,"RECREATE");
   if(!fOutput) fOutput = new TList();
-
 }

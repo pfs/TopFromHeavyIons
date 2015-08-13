@@ -31,12 +31,15 @@ int main(int argc, char* argv[])
   std::vector<std::string> urls=runProcess.getParameter<std::vector<std::string> >("input");
   std::string outname = runProcess.getParameter<std::string>("output");
   int maxEvts = runProcess.getParameter<int>("maxEvents");
+  int minCentrality = runProcess.getParameter<int>("minCentrality");
+  int maxCentrality = runProcess.getParameter<int>("maxCentrality");
 
   // run the analysis
   cout << "Running analysis over " << urls.size() << " files" << std::endl
-       << maxEvts << " events will be processed" << std::endl;
+       << maxEvts << " events will be processed" << std::endl
+       << "Centrality bins : [" << minCentrality << "," << maxCentrality << "]" << std::endl;
   
-  topEvt *ana = new topEvt(urls,maxEvts);
+  topEvt *ana = new topEvt(urls,maxEvts,minCentrality,maxCentrality);
   ana->Run(outname.c_str());
   cout << "Results have been stored in " << outname << endl;
 }

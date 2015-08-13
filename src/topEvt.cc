@@ -22,9 +22,11 @@ topEvt::topEvt() :
 }
 
 //__________________________________________________________
-topEvt::topEvt(std::vector<std::string> &infnames,int maxEvts) :
+topEvt::topEvt(std::vector<std::string> &infnames,int maxEvts,int minCentrality,int maxCentrality) :
   hiEvt(infnames),
-  maxEvts_(maxEvts)
+  maxEvts_(maxEvts),
+  minCentrality_(minCentrality),
+  maxCentrality_(maxCentrality)
 {	
   TChain *jetTree = new TChain("akPu3PFJetAnalyzer/t");
   for(size_t i=0; i<infnames.size(); i++) jetTree->Add(infnames[i].c_str());
@@ -129,7 +131,7 @@ void topEvt::Loop()
 	  hist_R->Fill(minR);
 	  hist_gen_pt_signal->Fill(gen_pt[closest_index]);
 	  hist_glb_pt_signal->Fill(glb_pt[nglb]);
-	  hist_glb_eta_signal->Fill(glb_eta[nglb]);
+	  hist_glb_eta_signal->Fill(TMath::Abs(glb_eta[nglb]));
 	  if(passKin)
 	    {
 	      hist_glb_dxy_signal->Fill(glb_dxy[nglb]);
@@ -145,7 +147,7 @@ void topEvt::Loop()
       else 
 	{
 	  hist_glb_pt_bg->Fill(glb_pt[nglb]);
-	  hist_glb_eta_bg->Fill(glb_eta[nglb]);
+	  hist_glb_eta_bg->Fill(TMath::Abs(glb_eta[nglb]));
 	  if(passKin)
 	    {
 	      hist_glb_dxy_bg->Fill(glb_dxy[nglb]);
@@ -224,9 +226,9 @@ void topEvt::Loop()
     fNJets30->Fill(njets30);
     fNJets40->Fill(njets40);
     
-    if(njets15>0) fEventSelection->Fill(2);
-    if(njets15>1) fEventSelection->Fill(3);
-    if(njets15>2) fEventSelection->Fill(4);
+    if(njets15>0) fEventSelection->Fill(3);
+    if(njets15>1) fEventSelection->Fill(4);
+    if(njets15>2) fEventSelection->Fill(5);
   }
 
   //finalize summary plots
@@ -249,9 +251,21 @@ void topEvt::Loop()
       csveffgraph[0]->SetPointError(np,0,passOthererr/totalOther);
       csveffgraph[1]->SetPoint(np,csvcut,passB/totalB);
       csveffgraph[1]->SetPointError(np,0,passBerr/totalB);
-      csvpurgraph->SetPoint(np,csvcut,passB/passOther);
-      csvpurgraph->SetPointError(np,0,TMath::Sqrt(TMath::Power(passB*passOthererr,2)+TMath::Power(passBerr*passOther,2))/TMath::Power(passOther,2));      
+      if(passOther>0)
+	{
+	  np=csvpurgraph->GetN();
+	  csvpurgraph->SetPoint(np,csvcut,passB/passOther);
+	  csvpurgraph->SetPointError(np,0,TMath::Sqrt(TMath::Power(passB*passOthererr,2)+TMath::Power(passBerr*passOther,2))/TMath::Power(passOther,2));      
+	}
     }
+
+  //save directly to file
+  fFileOut->cd();
+  hist_eff_pt_signal->Write();
+  hist_eff_pt_bg->Write();
+  csveffgraph[0]->Write();
+  csveffgraph[1]->Write();
+  csvpurgraph->Write();
 }
 
 //__________________________________________________________
@@ -263,18 +277,18 @@ void topEvt::CreateOutputObjects(const char* outname) {
   fOutput->Add(fPtHat);
 
   //event selection
-  fEventSelection = new TH1F("fEventSelection","fEventSelection;Selection step;counts",5,0,5);
+  fEventSelection = new TH1F("fEventSelection","fEventSelection;Selection step;counts",6,0,6);
   fEventSelection->GetXaxis()->SetBinLabel(1,"Generated");
   fEventSelection->GetXaxis()->SetBinLabel(2,"#geq2#mu");
   fEventSelection->GetXaxis()->SetBinLabel(3,"Z/low mass veto");
   fEventSelection->GetXaxis()->SetBinLabel(4,"#geq1jet");
-  fEventSelection->GetXaxis()->SetBinLabel(3,"#geq2jets");
-  fEventSelection->GetXaxis()->SetBinLabel(5,"#geq3jets");
+  fEventSelection->GetXaxis()->SetBinLabel(5,"#geq2jets");
+  fEventSelection->GetXaxis()->SetBinLabel(6,"#geq3jets");
 
   //generator level muons
   hist_gen_pt_signal = new TH1F("gen_pt_signal","Gen pt signal;Gen p_{T} [GeV]", 100, 0., 200.);
   fOutput->Add(hist_gen_pt_signal);
-  hist_R = new TH1F("dR","Event;dR",100, 0.,6.);
+  hist_R = new TH1F("dR","Event;dR",100, 0.,0.1);
   fOutput->Add(hist_R);
 
   //reconstructed muons
@@ -288,11 +302,9 @@ void topEvt::CreateOutputObjects(const char* outname) {
   fOutput->Add(hist_glb_pt_bg_pass);
   hist_eff_pt_signal = new TGraphAsymmErrors();
   hist_eff_pt_signal->SetName("eff_pt_signal");
-  fOutput->Add(hist_eff_pt_signal);
   hist_eff_pt_bg = new TGraphAsymmErrors();
   hist_eff_pt_bg->SetName("eff_pt_bg");
-  fOutput->Add(hist_eff_pt_bg);
-
+  
   //muon id
   hist_glb_dxy_signal = new TH1F("glb_dxy_signal","Glb_dxy;dxy", 100, -0.05, 0.05);
   fOutput->Add(hist_glb_dxy_signal);
@@ -352,7 +364,7 @@ void topEvt::CreateOutputObjects(const char* outname) {
   
   TString strTypes[2] = {"OtherJets","BJets"};
   for(Int_t i = 0; i<2; i++) {
-    fDiscrCSVSimple[i] = new TH1F(Form("fDiscrCSVSimple%s",strTypes[i].Data()),Form("fDiscrCSVSimple%s;discriminator",strTypes[i].Data()),100,0,10);
+    fDiscrCSVSimple[i] = new TH1F(Form("fDiscrCSVSimple%s",strTypes[i].Data()),Form("fDiscrCSVSimple%s;discriminator",strTypes[i].Data()),100,-1.5,1.5);
     fOutput->Add(fDiscrCSVSimple[i]);
     csveffgraph[i]=new TGraphErrors();
     csveffgraph[i]->SetName(Form("csveffgraph%s",strTypes[i].Data()));
@@ -547,9 +559,9 @@ Int_t topEvt::Cut(Long64_t entry)
 
   Int_t accept = 1;
   if(TMath::Abs(vz)>15.) accept = -1;
-  //if(hiBin<100. || hiBin>=160.) accept = -1; //centrality	
- 
 
+  //centrality requirements
+  if(hiBin<minCentrality_ || hiBin>=maxCentrality_) accept = -1; 
 
   return accept;
 }

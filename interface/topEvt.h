@@ -20,7 +20,7 @@
 class topEvt : public hiEvt {
  public :
   topEvt();
-  topEvt(std::vector<std::string> &infnames,int maxEvts=-1);
+  topEvt(std::vector<std::string> &infnames,int maxEvts=-1,int minCentrality=0, int maxCentrality=200);
   topEvt(TChain *chain);
   virtual ~topEvt();
   
@@ -36,6 +36,8 @@ class topEvt : public hiEvt {
   
  protected:
   Int_t maxEvts_;
+
+  Int_t minCentrality_,maxCentrality_;
 
   //output histos
   TH1F *fPtHat;      
