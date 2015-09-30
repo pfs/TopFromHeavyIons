@@ -72,6 +72,7 @@ class topEvt : public hiEvt {
   TH1F *hist_tLWM_bg;
   TH1F *hist_hiBin_signal;
   TH1F *hist_sumchpt;
+  TH1F *hist_sumchptrel;
   TH1F *invariant_mass_histogram; 
 
 

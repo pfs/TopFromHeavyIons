@@ -30,10 +30,20 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 options.register ('hardProc',
-		  'pythiaTTbar',
+		  'pythiaQCD',
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.string,
-		  "Hard process to simulate with PYTHIA6 : pythiaTTbar/pythiaZjets")
+		  "Hard process to simulate with PYTHIA6 : pythiaQCD")
+options.register ('minPtHat',
+		  80,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.float,
+		  'min pt hat')
+options.register ('maxPtHat',
+		  170,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.float,
+		  'max pt hat')
 options.register ('jobSeed',
 		  1,
 		  VarParsing.multiplicity.singleton,
@@ -97,13 +107,12 @@ process.generator = cms.EDFilter("PyquenGeneratorFilter",
 							     myParameters = cms.vstring(),
 							     parameterSets = cms.vstring('pythiaUESettings', 
 											 'customProcesses', 
-											 '%s' % options.hardProc,					  
-											 'pythiaZtoLeptons',
+											 'pythiaQCD',
 											 'kinematics'),
-							     ppDefault = cms.vstring('MSEL=1   ! QCD hight pT processes (only jets)', 
-										     'CKIN(3)=6.', 
-										     'MSTP(81)=0'),
-							     ppJets = cms.vstring('MSEL=1   ! QCD hight pT processes'),
+							     pythiaQCD = cms.vstring('MSEL=1               ! QCD high pT processes',
+										     'CKIN(3)=%f          ! minimum pt hat for hard interactions' % options.minPtHat,
+										     'CKIN(4)=%f          ! maximum pt hat for hard interactions' % options.maxPtHat
+										     ),
 							     pythiaUESettings = cms.vstring('MSTJ(11)=3     ! Choice of the fragmentation function', 
 											    'MSTJ(22)=2     ! Decay those unstable particles', 
 											    'PARJ(71)=10 .  ! for which ctau  10 mm', 
@@ -126,39 +135,7 @@ process.generator = cms.EDFilter("PyquenGeneratorFilter",
 											    'PARP(64)=0.2    ! ', 
 											    'MSTP(91)=1      !', 
 											    'PARP(91)=2.1   ! kt distribution', 
-											    'PARP(93)=15.0  ! '),
-							     pythiaWjets = cms.vstring('MSUB(16)=1', 
-										       'MSUB(31)=1'),
-							     pythiaZjets = cms.vstring('MSUB(15)=1', 
-										       'MSUB(30)=1'),
-							     pythiaTTbar = cms.vstring('MSUB(81)  = 1     ! qqbar to QQbar',
-										       'MSUB(82)  = 1     ! gg to QQbar',
-										       'MSTP(7)   = 6     ! flavor = top',
-										       'PMAS(6,1) = 172.5  ! top quark mass'),
-							     pythiaZtoLeptons = cms.vstring('MDME(174,1)=0', 
-											    'MDME(175,1)=0', 
-											    'MDME(176,1)=0', 
-											    'MDME(177,1)=0', 
-											    'MDME(178,1)=0', 
-											    'MDME(179,1)=0', 
-											    'MDME(182,1)=1', 
-											    'MDME(183,1)=0', 
-											    'MDME(184,1)=1', 
-											    'MDME(185,1)=0', 
-											    'MDME(186,1)=1', 
-											    'MDME(187,1)=0'),
-							     pythiaWtoLeptons = cms.vstring('MDME(190,1) = 0   !W decay into dbar u',
-											    'MDME(191,1) = 0   !W decay into dbar c',
-											    'MDME(192,1) = 0   !W decay into dbar t',
-											    'MDME(194,1) = 0   !W decay into sbar u',
-											    'MDME(195,1) = 0   !W decay into sbar c',
-											    'MDME(196,1) = 0   !W decay into sbar t',
-											    'MDME(198,1) = 0   !W decay into bbar u',
-											    'MDME(199,1) = 0   !W decay into bbar c',
-											    'MDME(200,1) = 0   !W decay into bbar t',
-											    'MDME(206,1) = 1   !W decay into e+ nu_e',
-											    'MDME(207,1) = 1   !W decay into mu+ nu_mu',
-											    'MDME(208,1) = 1   !W decay into tau+ nu_tau')
+											    'PARP(93)=15.0  ! ')
 							     ),
 				 aBeamTarget = cms.double(208.0),
 				 angularSpectrumSelector = cms.int32(0),
@@ -180,10 +157,34 @@ process.generator = cms.EDFilter("PyquenGeneratorFilter",
 				 qgpProperTimeFormation = cms.double(0.1)
 				 )
 
-if options.hardProc == 'pythiaWjets':  
-	process.generator.PythiaParameters.parameterSets.append('pythiaWtoLeptons')
+process.genParticlesForFilter = cms.EDProducer("GenParticleProducer",
+					       saveBarCodes = cms.untracked.bool(True),
+					       src = cms.InputTag("generator"),
+					       abortOnUnknownPDGCode = cms.untracked.bool(True)
+					       )
 
-process.ProductionFilterSequence = cms.Sequence(process.generator)
+
+process.bctoefilter = cms.EDFilter("BCToEFilter",
+				   filterAlgoPSet = cms.PSet(eTThreshold = cms.double(10),
+							     genParSource = cms.InputTag("genParticlesForFilter")
+							     )
+				   )
+
+process.emenrichingfilter = cms.EDFilter("EMEnrichingFilter",
+					 filterAlgoPSet = cms.PSet(isoGenParETMin=cms.double(20.),
+								   isoGenParConeSize=cms.double(0.1),
+								   clusterThreshold=cms.double(20.),
+								   isoConeSize=cms.double(0.2),
+								   hOverEMax=cms.double(0.5),
+								   tkIsoMax=cms.double(5.),
+								   caloIsoMax=cms.double(10.),
+								   requireTrackMatch=cms.bool(False),
+								   genParSource = cms.InputTag("genParticlesForFilter")
+								   )
+					 )
+
+
+process.ProductionFilterSequence = cms.Sequence(process.generator* (process.genParticlesForFilter + ~process.bctoefilter + process.emenrichingfilter) )
 
 # Path and EndPath definitions
 process.generation_step = cms.Path(process.pgen)

@@ -100,7 +100,7 @@ void topEvt::Loop()
     nb = fChain->GetEntry(jentry);   nbytes += nb;
     if (Cut(ientry) < 0) continue;
 
-    printf("\r [ %3.0f/100 ] done", (float)((100.*jentry)/(float)(nentries)));
+    //printf("\r [ %3.0f/100 ] done", (float)((100.*jentry)/(float)(nentries)));
 
     fPtHat->Fill(pthat);
     fEventSelection->Fill(0);
@@ -173,7 +173,8 @@ void topEvt::Loop()
       selected_muon_indices.push_back(nglb);
       if (isMatched && abs(gen_mom[closest_index])==24 ) hist_glb_pt_signal_pass->Fill(glb_pt[nglb]);
       else hist_glb_pt_bg_pass->Fill(glb_pt[nglb]);
-      hist_sumchpt->Fill(TMath::Max(Float_t(sumChPt-glb_pt[nglb]),Float_t(0.))/glb_pt[nglb]);
+      hist_sumchpt->Fill(TMath::Max(Float_t(sumChPt-glb_pt[nglb]),Float_t(0.)));
+      hist_sumchptrel->Fill(TMath::Max(Float_t(sumChPt-glb_pt[nglb]),Float_t(0.))/glb_pt[nglb]);
     }
     
 
@@ -344,8 +345,10 @@ void topEvt::CreateOutputObjects(const char* outname) {
   fOutput->Add(hist_tLWM_signal);
   hist_tLWM_bg = new TH1F("tLWM_bg","Glb_trkLayerWMeas;pixLayerWMeas", 100, 0., 16.);
   fOutput->Add(hist_tLWM_bg);
-  hist_sumchpt = new TH1F("hist_sumchpt","sumchpt;#Sigma_{ch PF}p_{T}/p_{T}(#mu);counts",100,0,0.8);
+  hist_sumchpt = new TH1F("hist_sumchpt","sumchpt;#Sigma_{ch PF}p_{T} [GeV];counts",50,0,50);
   fOutput->Add(hist_sumchpt);
+  hist_sumchptrel = new TH1F("hist_sumchptrel","sumchptrel;#Sigma_{ch PF}p_{T}/p_{T}(#mu);counts",50,0,0.8);
+  fOutput->Add(hist_sumchptrel);
 
   //dimuons
   invariant_mass_histogram = new TH1F("invariant_mass_histogram","invariant_mass; [GeV]", 100, 0., 200.);

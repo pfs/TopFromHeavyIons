@@ -13,8 +13,8 @@ parser.add_option('-n', '--nevts'      ,dest='nevts'  ,help='number of evetns/jo
 parser.add_option('-c', '--cfg'        ,dest='cfg'    ,help='cfg for the GEN step' ,default='PYQUEN_2760GeV_GEN_SIM_PU_cfg.py')
 parser.add_option('-p', '--proc'       ,dest='proc'   ,help='process to generate'  ,default='pythiaTTbar')
 parser.add_option(      '--proxy'      ,dest='proxy'  ,help='proxy to be used'     ,default=None, type='string')
-parser.add_option('-o', '--output'     ,dest='output' ,help='output directory'     ,default='/store/cmst3/group/top/summer2015/cmssw')
-parser.add_option(      '--isPP'       ,dest='isPP'   ,help='flag if is pp collision'     ,default=False, action='store_true')
+parser.add_option('-o', '--output'     ,dest='output' ,help='output directory'     ,default='/store/cmst3/group/hintt/CMSSW/')
+parser.add_option(      '--extra'      ,dest='extra'  ,help='extra options to pass',default='', type='string')
 (opt, args) = parser.parse_args()
 
 #prepare working directory
@@ -24,7 +24,8 @@ jobsBase='%s/FARM%s'%(workBase,time.time())
 os.system('mkdir -p %s'%jobsBase)
 
 #prepare output
-os.system('cmsMkdir %s'%opt.output)
+os.system('cmsMkdir %s/NTUPLE'%opt.output)
+os.system('cmsMkdir %s/RECO'%opt.output)
 
 #init a new proxy if none has been passed
 if opt.proxy is None:
@@ -43,11 +44,12 @@ for n in xrange(1,opt.jobs+1):
     scriptFile.write('cd %s/src\n'%cmsswBase)
     scriptFile.write('eval `scram r -sh`\n')
     scriptFile.write('cd -\n')
-    scriptFile.write('cmsRun %s/test/%s maxEvents=%d hardProc=%s jobSeed=%s\n' % (workBase,opt.cfg,opt.nevts,opt.proc,n) )
-    scriptFile.write('cmsRun %s/test/DIGIStep_cfg.py isPP=%r inputFiles=file:Events_%d.root\n' % (workBase,opt.isPP,n) )
-    scriptFile.write('cmsRun %s/test/RECOStep_cfg.py isPP=%r inputFiles=file:Events_%d_DIGI.root\n' % (workBase,opt.isPP,n) )
+    scriptFile.write('cmsRun %s/test/%s maxEvents=%d hardProc=%s jobSeed=%s %s\n' % (workBase,opt.cfg,opt.nevts,opt.proc,n,opt.extra) )
+    scriptFile.write('cmsRun %s/test/DIGIStep_cfg.py isPP=False inputFiles=file:Events_%d.root\n' % (workBase,n) )
+    scriptFile.write('cmsRun %s/test/RECOStep_cfg.py isPP=False inputFiles=file:Events_%d_DIGI.root\n' % (workBase,n) )
     scriptFile.write('cmsRun %s/test/runHIForest_MC_cfg.py inputFiles=file:Events_%d_DIGI_RECO.root outputFile=HIForest_%s_%d.root\n' % (workBase,n,opt.proc,n)) 
-    scriptFile.write('cmsStage HIForest_%s_%d.root %s\n' % (opt.proc,n,opt.output) )
+    scriptFile.write('cmsStage Events_%d_DIGI_RECO.root %s/RECO/Events_%d.root\n' % (n,opt.output,n) )
+    scriptFile.write('cmsStage HIForest_%s_%d.root %s/NTUPLE/Events_%d.root\n' % (opt.proc,n,opt.output,n) )
     scriptFile.write('rm Events_%d*root\n' % n)
     scriptFile.write('rm HIForest_%s_%d.root\n' % (opt.proc,n))
     scriptFile.close()

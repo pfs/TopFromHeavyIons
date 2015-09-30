@@ -56,8 +56,10 @@ More details can be found at https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiFore
 
 These four steps can be run on the batch system sequentially, by using the following script.
 ```
-python scripts/submitProduction.py -q 2nw -j 100 -n 250 -p pythiaTTbar -o /store/cmst3/group/top/summer2015/cmssw/PythiaTTbar/PbPb
-python scripts/submitProduction.py -q 2nw -j 100 -n 250 -p pythiaTTbar -o /store/cmst3/group/top/summer2015/cmssw/PythiaTTbar/pp --isPP -c PYTHIA_2760GeV_GEN_SIM_PU_cfg.py --proxy `pwd`/proxyforprod
+python scripts/submitProduction.py -q 2nw -j 5000 -n 250 -p pythiaZjets -o /store/cmst3/group/hintt/CMSSW/DY
+python scripts/submitProduction.py -q 1nw -j 5000 -n 250 -p pythiaWjets -o /store/cmst3/group/hintt/CMSSW/W
+python scripts/submitProduction.py -q 1nw -j 5000 -n 250 -p pythiaTTbar -o /store/cmst3/group/hintt/CMSSW/TT --proxy `pwd`/proxyforprod
+python scripts/submitProduction.py -q 1nw -j 5000 -n 100000 -p pythiaQCD --cfg PYQUEN_2760GeV_QCDEMenriched_GEN_SIM_PU_cfg.py -o /store/cmst3/group/hintt/CMSSW/QCDEMriched_80to250 --extra "minPtHat=80 maxPtHat=250"
 ```
 Other options can be passed. If no queue is given, jobs are sequentially run in the submission machine.
 
