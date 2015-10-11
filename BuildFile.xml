@@ -4,6 +4,7 @@
 <use name="rootrflx"/>
 <use name="fastjet"/>
 <use name="roostats"/>
+<use name="boost"/>
 <export>
   <lib name="1"/>
 </export>
