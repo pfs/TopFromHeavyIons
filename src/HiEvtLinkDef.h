@@ -17,7 +17,6 @@
 #include "UserCode/TopFromHeavyIons/interface/particleBase.h"
 #include "UserCode/TopFromHeavyIons/interface/pfParticle.h"
 #include "UserCode/TopFromHeavyIons/interface/pfParticleProducer.h"
-#include "UserCode/TopFromHeavyIons/interface/RecoObj.h"
 #include "UserCode/TopFromHeavyIons/interface/rhoMap.h"
 
 #include "UserCode/TopFromHeavyIons/interface/FJ_includes.h"
@@ -60,7 +59,6 @@
 #pragma link C++ class particleBase;
 #pragma link C++ class pfParticle;
 #pragma link C++ class pfParticleProducer;
-#pragma link C++ class RecoObj;
 #pragma link C++ class rhoMap;
 
 #pragma link C++ class FJWrapper;
