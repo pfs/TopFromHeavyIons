@@ -77,7 +77,7 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
     ),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
     fileName = cms.untracked.string('Events_%d.root' % options.jobSeed),
-    outputCommands = process.RECOEventContent.outputCommands,
+    outputCommands = process.RECOSIMEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
 

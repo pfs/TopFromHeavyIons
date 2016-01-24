@@ -12,88 +12,38 @@ def natural_sort(l):
 """
 lists the files available in castor
 """
-def fillFromStore(dir,ffile=0,step=-1,generatePfn=True):
+def fillFromStore(directory, mask='', prepend='root://eoscms//eos/cms'):  
 
     localdataset=cms.untracked.vstring()
-    if(len(dir)==0) : return localdataset
- 
-    #check if it is a directory (check if it is castor, eos or local)
-    prefix='singlefile'
-    lsout=[dir]
-    if(dir.find('path=')>=0) :
-        print 'Using dbs to query %s'%(dir)
-        prefix='eoscms'
-        lsout=commands.getstatusoutput('dbs lsf --' + dir)[1].split()
+    if(len(directory)==0) : return localdataset
 
-    elif(dir.find('castor')>=0) :
-        prefix='rfio'
-        lscommand ='rfdir ' + dir + ' | awk \'{print $9}\''
-        lsout = commands.getstatusoutput(lscommand)[1].split()
-    elif dir.find('srm')>=0 :
-        print 'Will use lcg-ls to query (make sure your proxy is initiated)'
-        prefix='root://cmsxrootd.fnal.gov//'
-        lscommand = 'lcg-ls -D srmv2 -b %s'%dir
-        print lscommand
-        lsout = commands.getstatusoutput(lscommand)[1].split()
-        for l in lsout : 
-            if l.find('.root')<0 : continue
-            if l.find('step3')<0 : continue #RECO files
-            xrootdName=prefix+l
-            xrootdName=xrootdName.replace('/eos/uscms/','')
-            localdataset.extend( [ xrootdName ] )
-        return localdataset
-    elif dir.find('/store/')==0:
-        prefix='eoscms'
-        lscommand = 'cmsLs ' + dir + ' | grep root | awk \'{print $5}\''
-        lsouttmp = commands.getstatusoutput(lscommand)[1].split()
+    from subprocess import Popen, PIPE
+    print 'looking into: '+directory+'...'
 
-        #this is needed as cmsLs lists twice files staged from castor
-        #(only needed during transition to EOS, can remove now)
-        lsout=[]
-        nduplicate=0
-        for l in lsouttmp :
-            if len(l)==0 : continue
-            if l in lsout :
-                nduplicate += 1
-                continue
-            #filter out CMG trees and histograms
-            basename = os.path.basename(l)
-            if(basename.find('tree_')==0) : continue
-            if(basename.find('histogram')==0): continue
-            lsout.append(l)
-        print 'Discarded ' + str(nduplicate)  + ' files duplicated in cmsLs output'       
-    elif(dir.find('.root')<0):
-        prefix='file'
-        lscommand='ls ' + dir
-        lsout = commands.getstatusoutput(lscommand)[1].split()
+    eos_cmd = '/afs/cern.ch/project/eos/installation/0.2.41/bin/eos.select'
+    data = Popen([eos_cmd, 'ls', '/eos/cms/'+directory],stdout=PIPE)
+    out,err = data.communicate()
 
-    #check for the files needed (first file, firstfile+step)
-    ifile=0
-    for line in lsout :
-        if(type(line) is not str ) : continue
-        if(len(line)==0) : continue
-        if(line.find('root')<0) : continue
+    full_list = []
 
-        if(ifile>=ffile):
-            if( (step<0) or  (step>0 and ifile<ffile+step) ):
-                
-                sline=''
-                if prefix=='eoscms':
-                    if(generatePfn) :
-                        sline='root://eoscms//eos/cms/'+line
-                        #sline=commands.getstatusoutput('cmsPfn ' + line )[1]
-                    else            : sline=line
-                elif(prefix=='singlefile') :
-                    sline='file://' + line
-                else :
-                    sline=str(prefix+'://' + dir + '/' + line.split()[0])
-                    if(len(sline)==0): continue
+    ## if input file was single root file:
+    if directory.endswith('.root'):
+        if len(out.split('\n')[0]) > 0:
+            return [prepend + directory]
 
-                localdataset.extend( [ sline ] )
-        ifile=ifile+1
+    ## instead of only the file name append the string to open the file in ROOT
+    for line in out.split('\n'):
+        if len(line.split()) == 0: continue
+        full_list.append(prepend + directory + '/' + line)
 
-    return localdataset
-    #return natural_sort(localdataset)
+    ## strip the list of files if required
+    if mask != '':
+        stripped_list = [x for x in full_list if mask in x]
+        return stripped_list
+
+    ## return 
+    return full_list
+
 
 """
 check that a file exist and is not corrupted

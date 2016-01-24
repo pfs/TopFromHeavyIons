@@ -14,7 +14,7 @@ parser.add_option('-d', '--dir',  dest='dir',            help='input directory',
 
 from UserCode.TopFromHeavyIons.storeTools_cff import fillFromStore
 
-for tier in ['RECO','NTUPLE']:
+for tier in ['RECO']: #,'NTUPLE']:
 
     allFiles=fillFromStore(opt.dir+'/'+tier)
 
