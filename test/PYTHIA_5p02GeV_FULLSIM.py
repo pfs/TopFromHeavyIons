@@ -34,10 +34,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 options.register ('hardProc',
-		  'pythiaTTbar',
+		  'TTbar',
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.string,
-		  "Hard process to simulate with PYTHIA6 : pythiaTTbar/pythiaZjets")
+		  "Hard process to simulate with PYTHIA6 : TTbar/W/DY,DYlowMass")
 options.register ('jobSeed',
 		  1,
 		  VarParsing.multiplicity.singleton,
@@ -88,52 +88,61 @@ process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '75X_mcRun2_asymptotic_ppAt5TeV_v3', '')
 
+
+myproc=cms.vstring('Top:qqbar2ttbar=on',
+		   'Top:gg2ttbar = on ', 
+		   '6:m0 = 172.5 ')
+if options.hardProc=='W':
+	myproc=cms.vstring( 'WeakSingleBoson:ffbar2W = on',
+			    '24:onMode = off',
+			    '24:onIfAny = 11 12',
+			    '24:onIfAny = 13 14',
+			    '24:onIfAny = 15 16')
+if options.hardProc=='DY':
+	myproc=cms.vstring('WeakSingleBoson:ffbar2gmZ = on',
+			   'PhaseSpace:mHatMin = 50.',
+			   '23:onMode = off',
+			   '23:onIfAny = 11 11',
+			   '23:onIfAny = 13 13',
+			   '23:onIfAny = 15 15')
+if options.hardProc=='DYlowMass':
+	myproc=cms.vstring('WeakSingleBoson:ffbar2gmZ = on',
+			   'PhaseSpace:mHatMin = 20.',
+			   'PhaseSpace:mHatMax = 50.',
+			   '23:onMode = off',
+			   '23:onIfAny = 11 11',
+			   '23:onIfAny = 13 13',
+			   '23:onIfAny = 15 15')
+
 process.generator = cms.EDFilter("Pythia8GeneratorFilter",
     PythiaParameters = cms.PSet(
-        parameterSets = cms.vstring('pythia8CommonSettings', 
-            'pythia8CUEP8M1Settings', 
-            'processParameters'),
-        processParameters = cms.vstring('Top:qqbar2ttbar=on',
-					'Top:gg2ttbar = on ', 
-					'6:m0 = 172.5 '),
-        pythia8CUEP8M1Settings = cms.vstring('Tune:pp 14', 
-            'Tune:ee 7', 
-            'MultipartonInteractions:pT0Ref=2.4024', 
-            'MultipartonInteractions:ecmPow=0.25208', 
-            'MultipartonInteractions:expPow=1.6'),
-        pythia8CommonSettings = cms.vstring('Tune:preferLHAPDF = 2', 
-            'Main:timesAllowErrors = 10000', 
-            'Check:epTolErr = 0.01', 
-            'Beams:setProductionScalesFromLHEF = off', 
-            'SLHA:keepSM = on', 
-            'SLHA:minMassSM = 1000.', 
-            'ParticleDecays:limitTau0 = on', 
-            'ParticleDecays:tau0Max = 10', 
-            'ParticleDecays:allowPhotonRadiation = on')
-    ),
-    comEnergy = cms.double(5020.0),
-    filterEfficiency = cms.untracked.double(1.0),
-    maxEventsToPrint = cms.untracked.int32(0),
-    pythiaHepMCVerbosity = cms.untracked.bool(False),
-    pythiaPylistVerbosity = cms.untracked.int32(0)
-)
+		parameterSets = cms.vstring('pythia8CommonSettings', 
+					    'pythia8CUEP8M1Settings', 
+					    'processParameters'),
+		processParameters = myproc,
+		pythia8CUEP8M1Settings = cms.vstring('Tune:pp 14', 
+						     'Tune:ee 7', 
+						     'MultipartonInteractions:pT0Ref=2.4024', 
+						     'MultipartonInteractions:ecmPow=0.25208', 
+						     'MultipartonInteractions:expPow=1.6'),
+		pythia8CommonSettings = cms.vstring('Tune:preferLHAPDF = 2', 
+						    'Main:timesAllowErrors = 10000', 
+						    'Check:epTolErr = 0.01', 
+						    'Beams:setProductionScalesFromLHEF = off', 
+						    'SLHA:keepSM = on', 
+						    'SLHA:minMassSM = 1000.', 
+						    'ParticleDecays:limitTau0 = on', 
+						    'ParticleDecays:tau0Max = 10', 
+						    'ParticleDecays:allowPhotonRadiation = on')
+		),
+				 comEnergy = cms.double(5020.0),
+				 filterEfficiency = cms.untracked.double(1.0),
+				 maxEventsToPrint = cms.untracked.int32(0),
+				 pythiaHepMCVerbosity = cms.untracked.bool(False),
+				 pythiaPylistVerbosity = cms.untracked.int32(0)
+				 )
 
-if options.hardProc=='W':
-	processParameters = cms.vstring('WeakSingleBoson:ffbar2W = on',
-					'24:onMode = off',
-					'24:onMode = 11',
-					'24:onMode = 13',
-					'24:onMode = 15'
-					)
-					
-if options.hardProc=='DY':
-	processParameters = cms.vstring('WeakSingleBoson:ffbar2gmZ = on',
-					'PhaseSpace:mHatMin = 50.',
-					'23:onMode = off',
-					'23:onMode = 11',
-					'23:onMode = 13',
-					'23:onMode = 15'
-					)
+print process.generator.PythiaParameters.processParameters
 
 
 process.ProductionFilterSequence = cms.Sequence(process.generator)
