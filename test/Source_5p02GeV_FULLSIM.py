@@ -27,10 +27,6 @@ process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
-)
-
 #parse command line arguments
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
@@ -44,37 +40,44 @@ options.register ('output',
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.string,
 		  "output file")
+options.register ('skipEvents',
+		  0,
+		  VarParsing.multiplicity.singleton,
+		  VarParsing.varType.int,
+		  "starting event number")
 options.parseArguments()
 
+process.maxEvents = cms.untracked.PSet(
+    input = cms.untracked.int32(options.maxEvents)
+)
 
 # Input source
 process.source = cms.Source("PoolSource",
-    dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
-    fileNames = cms.untracked.vstring(options.input),
-    inputCommands = cms.untracked.vstring('keep *', 
-#        'drop *_genParticles_*_*', 
-#        'drop *_genParticlesForJets_*_*', 
-#        'drop *_kt4GenJets_*_*', 
-#        'drop *_kt6GenJets_*_*', 
-#        'drop *_iterativeCone5GenJets_*_*', 
-#        'drop *_ak4GenJets_*_*', 
-#        'drop *_ak7GenJets_*_*', 
-#        'drop *_ak8GenJets_*_*', 
-#        'drop *_ak4GenJetsNoNu_*_*', 
-#        'drop *_ak8GenJetsNoNu_*_*', 
-#        'drop *_genCandidatesForMET_*_*', 
-#        'drop *_genParticlesForMETAllVisible_*_*', 
-#        'drop *_genMetCalo_*_*', 
-#        'drop *_genMetCaloAndNonPrompt_*_*', 
-#        'drop *_genMetTrue_*_*', 
-#        'drop *_genMetIC5GenJs_*_*'
-                                          ),
-    secondaryFileNames = cms.untracked.vstring()
-)
+                            skipEvents=cms.untracked.uint32(options.skipEvents),
+                            dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
+                            fileNames = cms.untracked.vstring(options.input),
+                            inputCommands = cms.untracked.vstring('keep *', 
+                                                                  #        'drop *_genParticles_*_*', 
+                                                                  #        'drop *_genParticlesForJets_*_*', 
+                                                                  #        'drop *_kt4GenJets_*_*', 
+                                                                  #        'drop *_kt6GenJets_*_*', 
+                                                                  #        'drop *_iterativeCone5GenJets_*_*', 
+                                                                  #        'drop *_ak4GenJets_*_*', 
+                                                                  #        'drop *_ak7GenJets_*_*', 
+                                                                  #        'drop *_ak8GenJets_*_*', 
+                                                                  #        'drop *_ak4GenJetsNoNu_*_*', 
+                                                                  #        'drop *_ak8GenJetsNoNu_*_*', 
+                                                                  #        'drop *_genCandidatesForMET_*_*', 
+                                                                  #        'drop *_genParticlesForMETAllVisible_*_*', 
+                                                                  #        'drop *_genMetCalo_*_*', 
+                                                                  #        'drop *_genMetCaloAndNonPrompt_*_*', 
+                                                                  #        'drop *_genMetTrue_*_*', 
+                                                                  #        'drop *_genMetIC5GenJs_*_*'
+                                                                  ),
+                            secondaryFileNames = cms.untracked.vstring()
+                            )
 
-process.options = cms.untracked.PSet(
-
-)
+process.options = cms.untracked.PSet()
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -131,6 +134,8 @@ from HLTrigger.Configuration.customizeHLTforMC import customizeHLTforFullSim
 
 #call to customisation function customizeHLTforFullSim imported from HLTrigger.Configuration.customizeHLTforMC
 process = customizeHLTforFullSim(process)
+
+process.MessageLogger.cerr.FwkReport.reportEvery = 50
 
 # End of customisation functions
 

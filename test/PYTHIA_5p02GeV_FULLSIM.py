@@ -42,7 +42,7 @@ options.register ('jobSeed',
 		  1,
 		  VarParsing.multiplicity.singleton,
 		  VarParsing.varType.int,
-		  "Randmo seed to use for the job")
+		  "Random seed to use for the job")
 options.parseArguments()
 
 
