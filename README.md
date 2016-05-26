@@ -3,8 +3,8 @@
 ## Installation
 
 ```
-cmsrel CMSSW_7_5_8_patch2
-cd CMSSW_7_5_8_patch2/src/
+cmsrel CMSSW_7_5_8_patch3
+cd CMSSW_7_5_8_patch3/src/
 cmsenv
 #wget -q -O - --no-check-certificate https://raw.github.com/pfs/TopFromHeavyIons/master/TAGS.txt | sh
 git clone git@github.com:pfs/TopFromHeavyIons.git UserCode/TopFromHeavyIons
