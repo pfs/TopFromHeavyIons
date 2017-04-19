@@ -3,32 +3,15 @@
 ## Installation
 
 ```
-cmsrel CMSSW_7_5_8_patch3
-cd CMSSW_7_5_8_patch3/src/
+cmsrel CMSSW_8_0_25
+cd CMSSW_8_0_25/src/
 cmsenv
-#wget -q -O - --no-check-certificate https://raw.github.com/pfs/TopFromHeavyIons/master/TAGS.txt | sh
 git clone git@github.com:pfs/TopFromHeavyIons.git UserCode/TopFromHeavyIons
 scram b -j 9
 cd UserCode/TopFromHeavyIons/
 ```
 
-## Running a local analysis
-
-The analysis of top quark events is implemented in src/topEvt.cc (Run method).
-It makes use of the standard HIforest trees.
-The class is instantiated by an executable called bin/runHITopAnalysis.cc.
-To run the analysis one calls it as
-```
-runHITopAnalysis test/HITopAnalysisParameters_cfg.py
-```
-where the cfg file can be modified to use different sources of events and different output file names.
-The histograms in the output files can be plotted using the following script.
-```
-TODO
-```
-
 ## Sample production
-
 ```
 voms-proxy-init --voms cms --valid 72:00
 ```
