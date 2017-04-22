@@ -45,7 +45,7 @@ parser.add_option('-n', '--nevts'      ,dest='nevts'  ,help='number of evetns/jo
 parser.add_option('-i', '--input'      ,dest='input'  ,help='input directory with GEN jobs' ,default=None,  type='string')
 parser.add_option('-c', '--cfg'        ,dest='cfg'    ,help='cfg to run step' ,default='PYTHIA_5p02GeV_FULLSIM.py')
 parser.add_option('-p', '--proc'       ,dest='proc'   ,help='process to generate'  ,default='TTbar')
-parser.add_option('-o', '--output'     ,dest='output' ,help='output directory'     ,default='/store/cmst3/group/hintt/CMSSW_7_5_8_patch2/')
+parser.add_option('-o', '--output'     ,dest='output' ,help='output directory'     ,default='/store/cmst3/group/hintt/CMSSW_8_0_26_patch2/')
 (opt, args) = parser.parse_args()
 
 #prepare working directory
