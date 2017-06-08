@@ -15,7 +15,7 @@ cd ${swDir}
 eval `scram r -sh`
 cd -
 echo "Now @ `pwd`"
-export X509_USER_PROXY=${CMSSW_BASE}/src/UserCode/TopFromHeavyIons/proxyforprod
+export X509_USER_PROXY=${CMSSW_BASE}/UserCode/TopFromHeavyIons/test/pPb/proxyforprod
 
 echo "Starting GEN-SIM"
 cmsDriver.py UserCode/TopFromHeavyIons/python/TOP-RunIISummer15GS-00033-fragment.py \
