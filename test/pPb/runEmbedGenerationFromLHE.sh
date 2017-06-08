@@ -10,10 +10,11 @@ echo "***************************"
 
 
 echo "Setting up environment"
-swDir=/afs/cern.ch/user/p/psilva/work/HIN/CMSSW_8_0_26_patch2/src/UserCode/TopFromHeavyIons
+swDir=/afs/cern.ch/user/p/psilva/work/HIN/CMSSW_8_0_26_patch2/src
 cd ${swDir}
 eval `scram r -sh`
 cd -
+echo "Now @ `pwd`"
 export X509_USER_PROXY=${CMSSW_BASE}/src/UserCode/TopFromHeavyIons/proxyforprod
 
 echo "Starting GEN-SIM"

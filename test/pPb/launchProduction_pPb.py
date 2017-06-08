@@ -14,18 +14,22 @@ cmsswbase='{0}/src/UserCode/TopFromHeavyIons/test/pPb/'.format(os.environ['CMSSW
 for g in gridpacks:
     os.system('eos mkdir {0}/{1}'.format(outStore,g))
     
-    condorName='%s.sub'%g
+    workdir='%s'%g
+    os.system('mkdir -p %s'%workdir)
+    condorName='%s/%s.sub'%(workdir,g)
     with open(condorName,'w') as condor:
-        condor.write('executable = {0}/{1}_$(seed).sh\n'.format(cmsswbase,g))
-        condor.write('output     = $(seed).$(ClusterId).$(ProcId).out\n')
-        condor.write('error      = $(seed).$(ClusterId).$(ProcId).err\n')
+        condor.write('executable = {0}/{1}/$(seed)/job.sh\n'.format(cmsswbase,workdir))
+        condor.write('output     = {0}/{1}/$(seed)/output.out\n'.format(cmsswbase,workdir))
+        condor.write('error      = {0}/{1}/$(seed)/output.err\n'.format(cmsswbase,workdir))
         
         for seed in xrange(1,101):
 
             condor.write('seed=%d\n'%seed)
             condor.write('queue 1\n')
 
-            scriptName='%s_%s.sh'%(g,seed)
+            seedDir='%s/%s'%(workdir,seed)
+            os.system('mkdir -p %s'%seedDir)
+            scriptName='%s/job.sh'%seedDir
             with open(scriptName,'w') as script:
                 script.write('#!/bin/bash\n')
                 script.write('{0}/runGridpack.sh {1}/{2}.tgz powhegbox_hvq {3}\n'.format(cmsswbase,baseGridpackDir,g,seed))
