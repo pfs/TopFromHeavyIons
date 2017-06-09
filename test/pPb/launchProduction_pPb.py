@@ -22,7 +22,7 @@ for g in gridpacks:
         condor.write('output     = {0}/{1}/$(seed)/output.out\n'.format(cmsswbase,workdir))
         condor.write('error      = {0}/{1}/$(seed)/output.err\n'.format(cmsswbase,workdir))
         
-        for seed in xrange(1,101):
+        for seed in xrange(1,201):
 
             condor.write('seed=%d\n'%seed)
             condor.write('queue 1\n')
