@@ -3,11 +3,14 @@
 import os
 
 outStore='/store/cmst3/user/psilva/HI/Powheg/'
-baseGridpackDir='/afs/cern.ch/user/p/psilva/public/forGeorgios'
+#baseGridpackDir='/afs/cern.ch/user/p/psilva/public/forGeorgios'
+baseGridpackDir='/afs/cern.ch/user/g/gkrintir/public/ForPedro/CT14_EPPS16/'
 gridpacks=[ 
-    'TT_hdamp_NNPDF23_8p16TeV_hvq',
-    'TT_hdamp_pPb_pp_NNPDF23_EPS09NLO_8.16TeV_hvq',
-    'TT_hdamp_Pbp_pp_NNPDF23_EPS09NLO_8.16TeV_hvq'
+#    'TT_hdamp_NNPDF23_8p16TeV_hvq',
+#    'TT_hdamp_pPb_pp_NNPDF23_EPS09NLO_8.16TeV_hvq',
+#    'TT_hdamp_Pbp_pp_NNPDF23_EPS09NLO_8.16TeV_hvq',
+    'TT_hdamp_Pbp_CT14_EPPS16_8.16TeV_powheg_hvq',
+    'TT_hdamp_pPb_CT14_EPPS16_8.16TeV_powheg_hvq'
     ]
 cmsswbase='{0}/src/UserCode/TopFromHeavyIons/test/pPb/'.format(os.environ['CMSSW_BASE'])
 
