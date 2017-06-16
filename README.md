@@ -3,8 +3,8 @@
 ## Installation
 
 ```
-cmsrel CMSSW_8_0_26
-cd CMSSW_8_0_26/src/
+cmsrel CMSSW_8_0_28
+cd CMSSW_8_0_28/src/
 cmsenv
 git clone git@github.com:pfs/TopFromHeavyIons.git UserCode/TopFromHeavyIons
 scram b -j 9

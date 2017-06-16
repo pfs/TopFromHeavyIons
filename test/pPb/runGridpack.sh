@@ -3,7 +3,7 @@
 GRIDPACK=${1} #full path to gridpack
 PROC=${2}     #powheg processe.g. powhegbox_hvq
 SEED=${3}     #seed to use
-NEVTS=250
+NEVTS=300
 
 echo "*******************************"
 echo "runGridpack.sh"

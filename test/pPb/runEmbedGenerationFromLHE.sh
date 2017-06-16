@@ -3,6 +3,7 @@
 store=${1} #/store/cmst3/user/psilva/HI/Powheg/TT_hdamp_pPb_pp_NNPDF23_EPS09NLO_8.16TeV
 inputlhe=${2} #/store/group/phys_top/gkrintir/TopHI/TT_8160GeV/PowHeg/LHAPDF5/NNPDF23/TT_hdamp_pPb_pp_NNPDF23_EPS09NLO_8.16TeV_powhe_hvq/seed_9_cmsgrid_final.lhe
 seed=${3}
+mode=${4}
 
 echo "***************************"
 echo "runEmbedGenerationFromLHE.sh"
@@ -18,7 +19,7 @@ echo "Now @ `pwd`"
 export X509_USER_PROXY=${CMSSW_BASE}/src/UserCode/TopFromHeavyIons/test/pPb/proxyforprod
 
 echo "Starting GEN-SIM"
-cmsRun $swDir/UserCode/TopFromHeavyIons/test/pPb/TOP-RunIISummer15GS-00033-fragment_py_GEN_SIM_PU.py seed=${seed}
+cmsRun $swDir/UserCode/TopFromHeavyIons/test/pPb/TOP-RunIISummer15GS-00033-${mode}-fragment_py_GEN_SIM_PU.py seed=${seed}
 #cmsDriver.py UserCode/TopFromHeavyIons/python/TOP-RunIISummer15GS-00033-fragment.py \
 #    --filein ${inputlhe} --filetype LHE \
 #    --fileout file:step0.root \
